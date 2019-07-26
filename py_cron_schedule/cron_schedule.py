@@ -76,6 +76,7 @@ class CronSchedule(object):
 
 
 class CronTimer(object):
+  # 需要检查两种，第一个是 next time(star、every)，第二个是当前日期是否匹配(number 类)
   # (min, max, millisecond)
   TIME_RANGE = [
     (1, 7, 1000 * 60 * 60 * 24 * 7),
