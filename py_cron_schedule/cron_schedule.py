@@ -21,28 +21,28 @@ class CronSchedule(object):
     self.__running = False
 
   def add_task(self,
-               cron_name: AnyStr,
+               task_name: AnyStr,
                cron_format: AnyStr,
                task: Callable,
                *args,
                **kwargs) -> bool:
-    if self.__task_dict.get(cron_name) is None:
-      self.__task_dict[cron_name] = {
+    if self.__task_dict.get(task_name) is None:
+      self.__task_dict[task_name] = {
         "timer": CronTimer(cron_format),
         "func": task,
         "args": args,
         "kwargs": kwargs,
       }
-      logger.info("Add task successfully.")
+      logger.info("Add task [" + task_name + "] successfully.")
       return True
     else:
       logging.warning("Add task failed: Already have the same name task")
       return False
 
   def del_task(self,
-               cron_name: AnyStr) -> bool:
-    if cron_name in self.__task_dict:
-      self.__task_dict.pop(cron_name)
+               task_name: AnyStr) -> bool:
+    if task_name in self.__task_dict:
+      self.__task_dict.pop(task_name)
       logger.info("Delete task successfully.")
       return True
     else:
@@ -50,15 +50,15 @@ class CronSchedule(object):
       return False
 
   def update_task(self,
-                  cron_name: AnyStr,
+                  task_name: AnyStr,
                   cron_format: AnyStr,
                   task: Callable,
                   *args,
                   **kwargs) -> bool:
-    if not self.del_task(cron_name):
+    if not self.del_task(task_name):
       return False
     else:
-      self.add_task(cron_name,
+      self.add_task(task_name,
                     cron_format,
                     task,
                     *args,
@@ -71,12 +71,9 @@ class CronSchedule(object):
       return False
 
     for task in self.__task_dict.values():
-      timer = task["timer"]
-      func = task["func"]
-      args = task["args"]
-      kwargs = task["kwargs"]
-      if timer.check():
-        func(*args, **kwargs)
+      if task["timer"].check():
+        task["func"](*task["args"],
+                     **task["kwargs"])
         return True
       else:
         return False
