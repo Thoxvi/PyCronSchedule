@@ -123,16 +123,17 @@ class CronTimer(object):
         cron_unit_parts = cron_unit.split("/")
         if len(cron_unit_parts) > 2:
           raise CronFormatError("[" + cron_unit + "] format error")
+        # */5
         elif len(cron_unit_parts) == 2:
           if (cron_unit_parts[0] != "*" or
               len(re.findall("\d+", cron_unit)) != 1):
             raise CronFormatError("[" + cron_unit + "] format error")
           else:
-            self.__cron_data.append(["every"] + cron_unit_parts)
+            self.__cron_data.append(["every"] + [int(cron_unit_parts[1])])
             continue
         elif len(cron_unit_parts) == 1:
           if cron_unit_parts[0] == "*":
-            self.__cron_data.append(["star"] + cron_unit_parts)
+            self.__cron_data.append(["star"])
             continue
           else:
             if re.match("\d+$", cron_unit_parts[0]) is not None:
@@ -140,27 +141,48 @@ class CronTimer(object):
               if num < std_range[0] or num > std_range[1]:
                 raise CronFormatError("[" + str(num) + "] out of range")
               else:
-                self.__cron_data.append(["number"] + cron_unit_parts)
+                self.__cron_data.append(["number"] + [int(cron_unit_parts[0])])
                 continue
         # 1-4
         elif re.search(r"[^0-9\-]", cron_unit) is None:
-          pass
+          cron_unit_parts = cron_unit.split("-")
+          if len(cron_unit_parts) != 2:
+            raise CronFormatError("[" + cron_unit + "] format error")
+          # 1-2 2-1 1- -2
+          for num in cron_unit_parts:
+            num = int(num)
+            if num < std_range[0] or num > std_range[1]:
+              raise CronFormatError("[" + cron_unit + "] out of range")
+
+          one = int(cron_unit_parts[0])
+          two = int(cron_unit_parts[1])
+          self.__cron_data.append(["number"] + list(range(one, two)))
+
         # 1,2,3
         elif re.search(r"[^0-9,]", cron_unit) is None:
-          pass
+          cron_unit_parts = cron_unit.split(",")
+          time_points = set()
+          for num in cron_unit_parts:
+            if num is "":
+              raise CronFormatError("[" + cron_unit + "] format error")
+            num = int(num)
+            if num < std_range[0] or num > std_range[1]:
+              raise CronFormatError("[" + cron_unit + "] out of range")
+            time_points.add(num)
+          self.__cron_data.append(["number"] + list(time_points))
         else:
           raise CronFormatError("[" + str(cron_unit_parts) + "] format error")
-
-        self.__cron_data.append(cron_unit_parts)
 
     self.__next_time = self.__calculate_next_time()
 
   def check(self) -> bool:
-    if time.time() > self.__next_time:
-      self.__next_time = self.__calculate_next_time()
-      return True
-    else:
+    if time.time() <= self.__next_time:
       return False
+
+    # TODO
+
+    self.__next_time = self.__calculate_next_time()
+    return True
 
 
 class CronFormatError(Exception):
