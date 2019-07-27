@@ -49,6 +49,38 @@ class CronSchedule(object):
       logging.warning("Delete task failed: Task does not exist")
       return False
 
+  def update_task(self,
+                  cron_name: AnyStr,
+                  cron_format: AnyStr,
+                  task: Callable,
+                  *args,
+                  **kwargs) -> bool:
+    if not self.del_task(cron_name):
+      return False
+    else:
+      self.add_task(cron_name,
+                    cron_format,
+                    task,
+                    *args,
+                    **kwargs)
+      return True
+
+  def check_once(self) -> bool:
+    if not self.__task_dict:
+      logger.warning("Task queue is empty.")
+      return False
+
+    for task in self.__task_dict.values():
+      timer = task["timer"]
+      func = task["func"]
+      args = task["args"]
+      kwargs = task["kwargs"]
+      if timer.check():
+        func(*args, **kwargs)
+        return True
+      else:
+        return False
+
   def start(self,
             hook_in_start: Callable = None,
             hook_in_end: Callable = None,
@@ -60,15 +92,7 @@ class CronSchedule(object):
     self.__running = True
     while self.__running:
       if hook_in_start is not None: hook_in_start()
-
-      for _, task in self.__task_dict.items():
-        timer = task["timer"]
-        func = task["func"]
-        args = task["args"]
-        kwargs = task["kwargs"]
-        if timer.check():
-          func(*args, **kwargs)
-
+      self.check_once()
       if hook_in_end is not None: hook_in_end()
       time.sleep(min_schedule_ms / 1000)
 
@@ -82,7 +106,7 @@ class CronTimer(object):
   TIME_RANGE = [
     (1, 7, 1000 * 60 * 60 * 24 * 7),
     (1, 12, 1000 * 60 * 60 * 24 * 30),
-    (1, 30, 1000 * 60 * 60 * 24),
+    (1, 31, 1000 * 60 * 60 * 24),
     (0, 23, 1000 * 60 * 60),
     (0, 59, 1000 * 60),
     (0, 59, 1000),  # second
