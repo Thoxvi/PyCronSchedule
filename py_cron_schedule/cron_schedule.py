@@ -177,7 +177,7 @@ class CronTimer(object):
     self.__next_time = self.__calculate_next_time()
 
   def check(self) -> bool:
-    if time.time() <= self.__next_time:
+    if time.time() * 1000 <= self.__next_time:
       return False
 
     '''[毫秒] [秒] 分 时 日 月 周，倒过来'''
