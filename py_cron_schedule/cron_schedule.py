@@ -2,6 +2,7 @@ import re
 import os
 import time
 import logging
+import datetime
 import multiprocessing
 
 from typing import AnyStr, Callable
@@ -89,7 +90,7 @@ class CronTimer(object):
   ]
 
   def __calculate_next_time(self) -> float:
-    next_time = time.time()
+    next_time = time.time() * 1000
 
     for cron_unit_parts_index in range(len(self.__cron_data)):
       cron_unit_parts = self.__cron_data[cron_unit_parts_index]
@@ -179,7 +180,24 @@ class CronTimer(object):
     if time.time() <= self.__next_time:
       return False
 
-    # TODO
+    '''[毫秒] [秒] 分 时 日 月 周，倒过来'''
+    date = time.localtime()
+    now_date = [
+      date.tm_wday + 1,
+      date.tm_mon,
+      date.tm_mday,
+      date.tm_hour,
+      date.tm_min,
+      date.tm_sec,
+      datetime.datetime.now().microsecond / 1000
+    ]
+
+    for time_unit_index in range(len(self.__cron_data)):
+      time_unit = self.__cron_data[time_unit_index]
+      if time_unit[0] == "number":
+        now = now_date[time_unit_index]
+        if now not in time_unit[1:]:
+          return False
 
     self.__next_time = self.__calculate_next_time()
     return True
