@@ -93,9 +93,9 @@ class CronTimer(object):
     next_time = time.time() * 1000
 
     for cron_unit_parts_index in range(len(self.__cron_data)):
-      cron_unit_parts = self.__cron_data[cron_unit_parts_index]
-      if len(cron_unit_parts) == 2:
-        num = int(cron_unit_parts[1])
+      cron_unit = self.__cron_data[cron_unit_parts_index]
+      if cron_unit[0] == "every":
+        num = int(cron_unit[1])
         next_time += num * CronTimer.TIME_RANGE[cron_unit_parts_index][2]
 
     return next_time
@@ -198,6 +198,10 @@ class CronTimer(object):
         now = now_date[time_unit_index]
         if now not in time_unit[1:]:
           return False
+      if time_unit[0] == "*":
+        pass
+      if time_unit[0] == "every":
+        pass
 
     self.__next_time = self.__calculate_next_time()
     return True
