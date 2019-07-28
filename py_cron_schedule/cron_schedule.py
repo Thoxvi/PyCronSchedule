@@ -19,6 +19,7 @@ class CronSchedule(object):
   def __init__(self):
     self.__task_dict = {}
     self.__running = False
+    self.__processing_pool = multiprocessing.Pool()
 
   def add_task(self,
                task_name: AnyStr,
@@ -65,35 +66,41 @@ class CronSchedule(object):
                     **kwargs)
       return True
 
-  def check_once(self) -> bool:
+  def check_once(self, use_multi=False) -> None:
     if not self.__task_dict:
       logger.warning("Task queue is empty.")
-      return False
-
+      return
     for task_name, task in self.__task_dict.items():
       if task["timer"].check():
         try:
-          task["func"](*task["args"],
-                       **task["kwargs"])
+          if use_multi:
+            self.__processing_pool.apply(
+              task["func"],
+              task["args"],
+              task["kwargs"]
+            )
+          else:
+            task["func"](
+              *task["args"],
+              **task["kwargs"]
+            )
         except Exception as e:
-          logger.warning("Capture an exception in [" + task_name + "]: " + str(e))
-        return True
-      else:
-        return False
+          logger.warning("Capture an exception in task [" + task_name + "]: " + str(e))
 
   def start(self,
-            hook_in_start: Callable = None,
-            hook_in_end: Callable = None,
-            min_schedule_ms=0.5) -> None:
+            hook_when_start: Callable = None,
+            hook_when_end: Callable = None,
+            min_schedule_ms: float = 0.5,
+            use_multi: bool = False) -> None:
     if not self.__task_dict:
       logger.warning("Task queue is empty.")
       return
 
     self.__running = True
     while self.__running:
-      if hook_in_start is not None: hook_in_start()
-      self.check_once()
-      if hook_in_end is not None: hook_in_end()
+      if hook_when_start is not None: hook_when_start()
+      self.check_once(use_multi=use_multi)
+      if hook_when_end is not None: hook_when_end()
       time.sleep(min_schedule_ms / 1000)
 
   def stop(self) -> None:
