@@ -70,10 +70,13 @@ class CronSchedule(object):
       logger.warning("Task queue is empty.")
       return False
 
-    for task in self.__task_dict.values():
+    for task_name, task in self.__task_dict.items():
       if task["timer"].check():
-        task["func"](*task["args"],
-                     **task["kwargs"])
+        try:
+          task["func"](*task["args"],
+                       **task["kwargs"])
+        except Exception as e:
+          logger.warning("Capture an exception in [" + task_name + "]: " + str(e))
         return True
       else:
         return False
