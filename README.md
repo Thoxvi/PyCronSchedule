@@ -33,3 +33,8 @@ if __name__ == '__main__':
 
 - [x] [简体中文](./doc/zh-CN/README.md)
 - [ ] [English](./doc/en-US/README.md)
+
+## License
+
+1. Under the Creative Commons GPL-3.0 Unported license. See the LICENSE file for details.
+2. Under the Anti 996 License. See the Anti 996 LICENSE file for details.
