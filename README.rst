@@ -1,7 +1,7 @@
 PyCronSchedule
 ==============
 
-|Travis|
+|Travis| |PyPI|
 
 Python's crontab syntax scheduler.
 
@@ -50,3 +50,5 @@ License
 
 .. |Travis| image:: https://travis-ci.org/Thoxvi/PyCronSchedule.svg?branch=master
    :target: https://travis-ci.org/Thoxvi/PyCronSchedule/settings#
+.. |PyPI| image:: https://img.shields.io/pypi/v/py-cron-schedule.svg
+   :target: https://pypi.python.org/pypi/py-cron-schedule
