@@ -19,7 +19,7 @@ setup(
   version='0.0.1',
   description='Python Crontab Syntax Scheduler.',
   long_description=open(os.path.join(os.path.dirname(__file__),
-                                     'README.md')).read(),
+                                     'README.rst')).read(),
   python_requires='>=3.4',
   url='https://github.com/Thoxvi/PyCronSchedule',
   author='Thoxvi',
