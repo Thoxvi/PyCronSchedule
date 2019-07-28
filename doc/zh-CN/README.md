@@ -137,6 +137,8 @@ use_multi|Bool|是否启用多进程优化，由于多进程不支持 Lambda 作
 
 > 无返回值；开始进入调度循环(循环执行 check_once)
 
+参数|类型|描述
+---|---|---
 hook_when_start|Callable|每次开始执行 check_once 前会执行一次
 hook_when_end|Callable|每次 check_once 执行结束后执行一次
 min_schedule_ms|Float|循环等待的时间，单位为毫秒，默认 0.5ms 检查一次
