@@ -1,5 +1,7 @@
 # PyCronSchedule
 
+[![Travis](https://travis-ci.org/Thoxvi/PyCronSchedule.svg?branch=master)](https://travis-ci.org/Thoxvi/PyCronSchedule/settings#)
+
 Python's crontab syntax scheduler.
 
 ## Features

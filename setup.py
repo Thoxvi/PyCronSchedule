@@ -2,7 +2,7 @@ import os
 from setuptools import setup
 
 setup(
-    name='py-cron-schedule',
+    name='py_cron_schedule',
     version='0.0.1',
     description='',
     long_description=open(os.path.join(os.path.dirname(__file__),
@@ -20,7 +20,7 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Topic :: Software Development :: Libraries'
     ],
-    keywords='lambda function',
+    keywords='crontab schedule scheduler',
 
     packages=["py_cron_schedule"],
 )
