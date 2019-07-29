@@ -14,7 +14,7 @@ Features
    `Crontab <http://man7.org/linux/man-pages/man5/crontab.5.html>`__
    timing tasks
 -  [x] Provides millisecond precision
--  [ ] Use multi-process optimization
+-  [x] Use multi-process optimization
 
 Usage
 -----

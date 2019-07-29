@@ -149,7 +149,7 @@ class CronTimer(object):
     if len(cron_list) == 5:
       cron_list.append("0")
     if len(cron_list) == 6:
-      cron_list.append("*/1000")
+      cron_list.append("*/1001")
 
     for cron_unit_index in range(len(cron_list)):
       cron_unit = cron_list[cron_unit_index]
