@@ -141,15 +141,11 @@ class CronTimer(object):
 
     cron_format = cron_format.strip()
     cron_list = re.split("\s+", cron_format)[::-1]
+    cron_list = list(filter(lambda x: bool(x), cron_list))
 
     if len(cron_list) < 5 or len(cron_list) > 7:
       raise CronFormatError(
         "The number of [" + cron_format + "] format parameters is incorrect: " + str(len(cron_list)))
-
-    if len(cron_list) == 5:
-      cron_list.append("0")
-    if len(cron_list) == 6:
-      cron_list.append("*/1001")
 
     for cron_unit_index in range(len(cron_list)):
       cron_unit = cron_list[cron_unit_index]
@@ -167,7 +163,7 @@ class CronTimer(object):
               int(cron_unit_parts[1]) < 1):
             raise CronFormatError("[" + cron_unit + "] format error")
           else:
-            self.__cron_data.append(["every"] + [int(cron_unit_parts[1]) - 1])
+            self.__cron_data.append(["every"] + [int(cron_unit_parts[1])])
             continue
         elif len(cron_unit_parts) == 1:
           if cron_unit_parts[0] == "*":
@@ -214,6 +210,17 @@ class CronTimer(object):
         self.__cron_data.append(["number"] + list(time_points))
       else:
         raise CronFormatError("[" + str(cron_unit) + "] format error")
+
+    if len(self.__cron_data) == 5:
+      self.__cron_data.append(["number"] + [0])
+    if len(cron_list) == 6:
+      if self.__cron_data[-1][0] == "every":
+        self.__cron_data.append(["star"])
+      elif (self.__cron_data[-1][0] == "star" or
+            self.__cron_data[-1][0] == "number"):
+        self.__cron_data.append(["every"] + [1000])
+      else:
+        raise CronFormatError("[" + str(self.__cron_data[-1][0]) + "] format error")
 
     self.__next_time = self.__calculate_next_time()
 
