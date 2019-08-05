@@ -213,7 +213,7 @@ class CronTimer(object):
 
     if len(self.__cron_data) == 5:
       self.__cron_data.append(["number"] + [0])
-    if len(cron_list) == 6:
+    if len(self.__cron_data) == 6:
       if self.__cron_data[-1][0] == "every":
         self.__cron_data.append(["star"])
       elif (self.__cron_data[-1][0] == "star" or

@@ -2,6 +2,12 @@
 
 欢迎使用 Python 的 `Crontab` 语法调度器！此库能过做到 `定时、周期地执行函数` 的功能，同时提供丰富的接口和灵活的配置来满足各种各样的需求。
 
+## 相关项目资源
+
+- [GitHub 主页](https://github.com/Thoxvi/PyCronSchedule)
+- [Issues 提交](https://github.com/Thoxvi/PyCronSchedule/issues)
+- [版本修订历史](./HISTORY.md)
+
 ## 安装
 
 `$ pip install py_cron_schedule`
