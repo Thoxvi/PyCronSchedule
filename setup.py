@@ -16,7 +16,7 @@ md_to_rst("README.md", "README.rst")
 
 setup(
   name='py_cron_schedule',
-  version='0.0.6',
+  version='0.0.7',
   description='Python Crontab Syntax Scheduler.',
   long_description=open(os.path.join(os.path.dirname(__file__),
                                      'README.rst')).read(),
